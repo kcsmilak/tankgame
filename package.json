@@ -1,0 +1,18 @@
+{
+  "name": "boing",
+  "version": "1.0.0",
+  "description": "fun game this",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lg",
+  "license": "ISC",
+  "dependencies": {
+    "detect-collisions": "^2.5.2",
+    "express": "^4.16.3",
+    "matter-js": "^0.14.2",
+    "socket.io": "^2.2.0"
+  }
+}

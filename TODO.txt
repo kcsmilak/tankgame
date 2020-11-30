@@ -1,0 +1,36 @@
+NETWORK
+- player login
+- kick dead players
+
+
+
+FIELD
+- large field
+
+si- limited shield
+- limited ammo
+- ammo powerups
+- shield powerups
+- health
+
+BATTLE ROYALE
+- last person standing
+- no respawn
+- countdowntimer
+
+BOTS
+- bots
+
+BUGS
+- wall glitch overlapping
+- kick glitch remove id vs creatorid
+
+
+What's New:
+* added large field map
+* added shield depletion
+* added speed key
+* added debug output
+* fixed wall glitch
+* fixed respawn
+* fixed kick dead players
