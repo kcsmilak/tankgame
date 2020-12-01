@@ -2,6 +2,7 @@ const Tank = require('./tank');
 const Wall = require('./wall');
 const Player = require('./player');
 const Bullet = require('./bullet');
+const AmmoPack = require('./ammopack');
 
 const PlayerInput = require('./playerinput')
 
@@ -82,13 +83,9 @@ class TankGame {
         this.walls = [];
         this.tanks = [];
         this.players = [];
+        this.powerups = [];
 
-        let bot;
-        //bot = this.addPlayer(this.width / 4, this.height / 2);
-        //bot.id = "Bot 1";
 
-        //bot = this.addPlayer(this.width / 4 * 3, this.height / 2);
-        //bot.id = "Bot 2";
 
         let wallWidth = 20;
         let wall;
@@ -125,12 +122,23 @@ class TankGame {
 
 
         this.walls.push(new Wall(
-            this.width / 2, this.height / 2, this.height/4, 10
+            this.width / 2, this.height / 2, this.height / 4, 50
         ));
 
         this.walls.push(new Wall(
-            this.width / 2, this.height / 2 - this.height/4, 10, this.height/8
+            this.width / 2, this.height / 2 - this.height / 4, 50, this.height / 8
         ));
+
+
+        let bot;
+        //bot = this.addPlayer(this.width / 4, this.height / 2);
+        //bot.id = "Bot 1";
+
+        //bot = this.addPlayer(this.width / 4 * 3, this.height / 2);
+        //bot.id = "Bot 2";
+
+        this.spawnAmmoPack();
+        this.spawnAmmoPack();
     }
 
     recordInput(id, keyCode, value) {
@@ -139,7 +147,7 @@ class TankGame {
             console.log(`cannot process input ${keyCode}=${value} of missing player ${id}`)
             return;
         } else {
-            console.log(`doing ${keyCode} to player ${player.id}`)
+            //console.log(`doing ${keyCode} to player ${player.id}`)
         }
         player.playerInput.setKey(keyCode, value);
     }
@@ -172,7 +180,6 @@ class TankGame {
 
         let moveSpeed = 5;
         if (playerInput.speed) {
-            console.log("double speed!");
             moveSpeed *= 2;
         }
         if (playerInput.up && playerInput.down) {
@@ -205,6 +212,7 @@ class TankGame {
         let bullets = this.bullets;
         let tanks = this.tanks;
         let players = this.players;
+        let powerups = this.powerups;
 
 
 
@@ -240,12 +248,17 @@ class TankGame {
                 if (bullet != null)
                     bullet.update();
             }
+
+            for (let powerup of powerups) {
+                if (powerup != null)
+                    powerup.update();
+            }
         }
 
         { // delete old bullets
             for (let key in bullets) {
                 let bullet = bullets[key];
-                if (bullet.updateCount > 80)
+                if (bullet != null && bullet.updateCount > 80)
                     delete bullets[key];
             }
         }
@@ -275,14 +288,31 @@ class TankGame {
             }
         }
 
-        // test for player collisions and react 
+        // test for powerup collisions and react 
         {
-            for (let i in players) {
+            for (let i in this.powerups) {
 
+                
+                let powerup = powerups[i];
+                for (let tank of this.tanks) {
+
+                    if (tank.overlaps(powerup)) {
+                        console.log("hit");
+                        console.log(powerup);
+
+                        powerup.apply(tank);
+
+                        delete powerups[i];
+
+                        this.spawnAmmoPack();
+                        
+                    }
+                }
             }
 
         }
 
+        // test for bullet collisions
         for (let i in this.bullets) {
             let bullet = bullets[i];
             for (let tank of this.tanks) {
@@ -312,6 +342,19 @@ class TankGame {
 
     }
 
+
+    getSpawnPoint() {
+        let x = this.width * Math.random();
+        let y = this.width * Math.random();
+        return { x:x, y:y };        
+    }
+
+    spawnAmmoPack() {
+        let pos = this.getSpawnPoint();
+        this.powerups.push(new AmmoPack(pos.x, pos.y));
+    }
+
+
     respawnTank(tank) {
         let margin = 100;
         let x0 = margin;
@@ -330,6 +373,7 @@ class TankGame {
         tank.x = respawnPoint[0];
         tank.y = respawnPoint[1];
 
+        tank.x = 100; tank.y= 100;
     }
 
     render(callback) {
@@ -339,35 +383,10 @@ class TankGame {
 
     fire(tank) {
 
+        let bullet = tank.fire();
         let bullets = this.bullets;
-
-        let x = tank.x;
-        let y = tank.y;
-        let w = tank.width;
-        let h = tank.height;
-        let angle = tank.angle;
-        console.log(`fire! ${x},${y}@${angle}`);
-
-
-        let speed = 10;
-
-        let cos = Math.cos(Math.PI * angle / 180);
-        let sin = Math.sin(Math.PI * angle / 180);
-
-        x = tank.x + tank.width * cos;
-        y = tank.y + tank.height * sin;
-
-        let dx = speed * cos;
-        let dy = speed * sin;
-
-        console.log(`fire ${tank.id} ${x},${y} - ${dx},${dy}`);
-
-
-        let bullet = new Bullet(x, y, dx, dy);
-        bullet.angle = angle;
-        bullet.creatorId = tank.id;
-        //bullets[bullet.id] = bullet;
-        bullets.push(bullet);
+        if (null != bullet)
+            bullets.push(bullet);
     }
 
     reset() {

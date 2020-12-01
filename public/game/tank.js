@@ -14,6 +14,8 @@ class Tank extends Body {
         this.color = serverTank.color;        
         this.shield = serverTank.shield;
         this.shieldPower = serverTank.shieldPower;
+        this.health = serverTank.health;
+        this.ammo = serverTank.ammo;
     }
 
     draw() {

@@ -10,7 +10,9 @@ class Bullet extends Body {
     this.dy = dy;
     
     this.width = this.diameter;
-    this.height = this.diameter;  
+    this.height = this.diameter;
+    
+    this.power = 50;
   }
   
   update() {

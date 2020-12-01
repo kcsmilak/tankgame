@@ -57,5 +57,8 @@ class Body {
         return this.y0() + this.height;
     }
 
+    fromJson(jsonObject) {
+
+    }
 }
 

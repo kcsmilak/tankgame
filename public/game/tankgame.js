@@ -20,6 +20,7 @@ class TankGame {
         this.walls = [];
         this.bullets = [];
         this.tanks = [];
+        this.powerups = [];
         this.followTank = null;
 
     }
@@ -67,6 +68,8 @@ class TankGame {
                     debugText += `\n\nvw: ${viewWidth}\nvh: ${viewHeight}`;
 
                     debugText += `\n\nshield: ${this.followTank.shieldPower}`;
+                    debugText += `\nammo: ${this.followTank.ammo}`;
+                    debugText += `\nhealth: ${this.followTank.health}`;
 
                     translate(-vx, -vy);
                 }
@@ -80,6 +83,12 @@ class TankGame {
                         wall.draw();
                     }
                 }
+                
+                { // Draw powerups
+                    for (let powerup of this.powerups) {
+                        powerup.draw();
+                    }
+                }  
 
                 { // Draw bullets
                     for (let bullet of this.bullets) {
@@ -92,6 +101,9 @@ class TankGame {
                         tank.draw();
                     }
                 }
+
+              
+
             }
             pop();
 
@@ -202,6 +214,13 @@ class TankGame {
 
             }
         }
+
+        for (let serverObject of jsonObject.powerups) {
+            if (null == serverObject) continue;
+            let clientObject = new AmmoPack(serverObject.x, serverObject.y);
+            clientObject.fromJson(serverObject);
+            this.powerups.push(clientObject);
+        }        
 
         this.followTank = this.getTankById(this.playerId);
 

@@ -8,12 +8,14 @@ class Body {
     
     this.angle = 0;
     
-    this.id = Math.random(0,10000);
+    this.id = Math.floor(Math.random()*10000);
 
     this.updateCount = 0;
     this.createTime = new Date();
 
     this.creatorId = null;
+
+    this.width = 1;
   }
 
   update() { 

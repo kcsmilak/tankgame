@@ -1,4 +1,5 @@
 const Body = require('./body');
+const Bullet = require('./bullet');
 
 class Tank extends Body {
   constructor(x, y) {
@@ -12,6 +13,7 @@ class Tank extends Body {
     this.shield = false;
 
     this.health = 100;
+    this.ammo = 10;
     this.shieldPower = 100;
     this.shieldCoolDown = 0;
 
@@ -41,6 +43,39 @@ class Tank extends Body {
     super.update();
   }
   
+  fire() {
+
+        if (this.ammo <= 0) return null;
+        this.ammo--;
+      let tank = this;
+        let x = tank.x;
+        let y = tank.y;
+        let w = tank.width;
+        let h = tank.height;
+        let angle = tank.angle;
+        //console.log(`fire! ${x},${y}@${angle}`);
+
+
+        let speed = 10;
+
+        let cos = Math.cos(Math.PI * angle / 180);
+        let sin = Math.sin(Math.PI * angle / 180);
+
+        x = tank.x + tank.width * cos;
+        y = tank.y + tank.height * sin;
+
+        let dx = speed * cos;
+        let dy = speed * sin;
+
+        //console.log(`fire ${tank.id} ${x},${y} - ${dx},${dy}`);
+
+
+        let bullet = new Bullet(x, y, dx, dy);
+        bullet.angle = angle;
+        bullet.creatorId = tank.id;
+        //bullets[bullet.id] = bullet;
+        return bullet;      
+  }
 
 }
 
