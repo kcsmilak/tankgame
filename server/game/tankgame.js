@@ -96,37 +96,37 @@ class TankGame {
             0 + wallWidth / 2,
             this.height / 2,
             wallWidth,
-            this.height);
+            this.height, true);
         this.walls.push(wall);
 
         wall = new Wall(
             this.width - wallWidth / 2,
             0 + this.height / 2,
             wallWidth,
-            this.height);
+            this.height, true);
         this.walls.push(wall);
 
         wall = new Wall(
             this.width / 2,
             wallWidth / 2,
             this.width,
-            wallWidth);
+            wallWidth, true);
         this.walls.push(wall);
 
         wall = new Wall(
             0 + this.width / 2,
             this.height - wallWidth / 2,
-            this.width, wallWidth);
+            this.width, wallWidth, true);
         this.walls.push(wall);
 
 
 
         this.walls.push(new Wall(
-            this.width / 2, this.height / 2, this.height / 4, 50
+            this.width / 2, this.height / 2, this.height / 4, 50, false
         ));
 
         this.walls.push(new Wall(
-            this.width / 2, this.height / 2 - this.height / 4, 50, this.height / 8
+            this.width / 2, this.height / 2 - this.height / 4, 50, this.height / 8, false
         ));
 
 
@@ -157,41 +157,30 @@ class TankGame {
         let playerInput = player.playerInput;
         let tank = player.tank;
 
+        tank.stop();
+
         if (playerInput.fire && !playerInput.shield) {
             this.fire(tank);
             playerInput.fire = false;
         }
 
         let rotateSpeed = 3;
-        if (playerInput.left) {
-            tank.turn(-rotateSpeed);
-        }
-        if (playerInput.right) {
-            tank.turn(rotateSpeed);
-        }
+        if (playerInput.crouch) {
+            rotateSpeed /= 4;
+        }        
+        tank.turn(playerInput.turn * rotateSpeed);
 
-        let strafeSpeed = 3;
-        if (playerInput.strafeLeft) {
-            tank.strafe(-strafeSpeed);
-        }
-        if (playerInput.strafeRight) {
-            tank.strafe(strafeSpeed);
-        }
+        let strafeSpeed = 8;
+        if (playerInput.z) {
+            strafeSpeed /= 2;
+        }           
+        tank.strafe(playerInput.strafe * strafeSpeed);
 
-        let moveSpeed = 5;
+        let moveSpeed = 10;
         if (playerInput.speed) {
-            moveSpeed *= 2;
+            moveSpeed /= 2;
         }
-        if (playerInput.up && playerInput.down) {
-            // do nothing
-        } else if (playerInput.up) {
-            tank.move(moveSpeed);
-
-        } else if (playerInput.down) {
-            tank.move(-moveSpeed);
-        } else {
-            tank.move(0);
-        }
+        tank.move(playerInput.move * moveSpeed);
 
         if (playerInput.shield) {
             tank.shield = true;
@@ -203,6 +192,13 @@ class TankGame {
             this.respawnTank(tank);
             playerInput.reset = false;
 
+        }
+
+        if (playerInput.colorCycle) {
+            tank.color = {
+                r: Math.trunc(255*Math.random()), 
+    g: Math.trunc(255*Math.random()), 
+    b: Math.trunc(255*Math.random())};
         }
     }
 
@@ -324,13 +320,20 @@ class TankGame {
                     if (tank.shield) {
                         bullet.bounce(tank);
                     } else {
-                        if (player.id != tank.id) {
-                            this.respawnTank(tank);
-                            // respawn shot tank  
-                            this.respawnTank(tank);
+                        if (1) { //if (player.id != tank.id) {
 
-                            // reward shooter
-                            player.score += 1;
+                            tank.hit(10);
+
+                            if (tank.isKilled()) {
+                                // respawn shot tank  
+                                this.respawnTank(tank);
+                                tank.heal();
+
+                                // reward shooter if not the same player
+                                if (player.id != tank.id) {
+                                    player.score += 1;
+                                }
+                            }
                         }
 
                         delete bullets[i];
@@ -372,8 +375,6 @@ class TankGame {
 
         tank.x = respawnPoint[0];
         tank.y = respawnPoint[1];
-
-        tank.x = 100; tank.y= 100;
     }
 
     render(callback) {

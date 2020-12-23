@@ -1,10 +1,11 @@
 const Body = require('./body');
 
 class Wall extends Body {
-    constructor(x, y, width, height) {
+    constructor(x, y, width, height, boundary) {
         super(x, y);
         this.width = width;
         this.height = height;
+        this.boundary = boundary;
 
         this.color = {
             r: 100,

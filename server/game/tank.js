@@ -13,9 +13,10 @@ class Tank extends Body {
     this.shield = false;
 
     this.health = 100;
-    this.ammo = 10;
+    this.ammo = 30;
     this.shieldPower = 100;
     this.shieldCoolDown = 0;
+    this.speedPower = 100;
 
     this.shieldDepleteSpeed = 1;
     this.shieldRegenSpeed = 0.5;
@@ -77,6 +78,18 @@ class Tank extends Body {
         return bullet;      
   }
 
+
+  hit(damage) {
+    this.health -= damage;
+  }
+
+  heal() {
+      this.health = 100;
+  }
+
+  isKilled() {
+      return this.health <= 0;
+  }
 }
 
 if (typeof(module) !== 'undefined') { module.exports = Tank; }

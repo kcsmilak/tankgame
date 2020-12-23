@@ -10,7 +10,7 @@ class AmmoPack extends Powerup {
   }
 
   apply(tank) {
-      tank.ammo += 10;
+      tank.ammo = Math.min(30, tank.ammo + 10);
       super.apply(tank);
   }
 }

@@ -1,21 +1,18 @@
 class PlayerInput {
     constructor() {
 
-        this.left = false;
-        this.right = false;
-
-        this.up = false;
-        this.down = false;
+        this.turn = 0;
+        this.move = 0;
+        this.strafe = 0;
+        
+        this.turbo = false;
+        this.crouch = false;
 
         this.fire = false;
         this.shield = false;
 
         this.reset = false;
-
-        this.strafeLeft = false;
-        this.strafeRight = false;
-
-        this.speed = false;
+        this.colorCycle = false;
 
         this.heartbeatTime = null;
     }
@@ -23,16 +20,16 @@ class PlayerInput {
     setKey(keyCode, value) {
         switch (keyCode) {
             case 37: // left
-                this.left = value;
+                this.turn = -value;
                 break;
             case 39: // right
-                this.right = value;
+                this.turn = value;
                 break;
-            case 38: //up
-                this.up = value;
-                break; //up
-            case 40: 
-                this.down = value;
+            case 38: // up
+                this.move = value;
+                break;
+            case 40:  // down
+                this.move = -value;
                 break;
             case 32: // SPACE
                 this.fire = value;
@@ -42,29 +39,29 @@ class PlayerInput {
                 this.speed = value;
                 break;
 
-            case 65:  //a
-                this.left = value;
+            case 65:  // a
+                this.strafe = -value;
                 break;
-            case 68:  //d
-                this.right = value;
+            case 68:  // d
+                this.strafe = value;
                 break;
-            case 87:  //w
-                this.up = value;
+            case 87:  // w
+                this.move = value;
                 break;
-            case 83:  //s
-                this.shield = value;
+            case 83:  // s
+                this.move = -value;
                 break;
-            case 69:  //e
+            case 69:  // e
                 this.fire = value;
                 break;
             case 88: // x
-                this.down = value;
+                this.shield = value;
                 break;
             case 90: // z
-                this.strafeLeft = value;
+                this.strafe = value;
                 break;
             case 67: // c
-                this.strafeRight = value;
+                this.colorCycle = value;
                 break;
 
             case 82:  //r

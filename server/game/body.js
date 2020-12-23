@@ -5,6 +5,9 @@ class Body {
     
     this.dx = 0;
     this.dy = 0;
+
+    this.sdx = 0;
+    this.sdy = 0;
     
     this.angle = 0;
     
@@ -19,8 +22,8 @@ class Body {
   }
 
   update() { 
-    this.x += this.dx;
-    this.y += this.dy;
+    this.x += this.dx + this.sdx;
+    this.y += this.dy + this.sdy;
     this.updateCount++;
   }
 
@@ -117,8 +120,8 @@ class Body {
     ball.dy = 0;
   }
   
-  turn(rotateSpeed) {
-    this.angle = (this.angle + rotateSpeed) % 360;
+  turn(speed) {
+    this.angle = (this.angle + speed) % 360;
   }
   
   accelerate(speed) {
@@ -126,27 +129,33 @@ class Body {
     let sin = Math.trunc(speed*Math.sin(Math.PI * this.angle/180));
     
     this.dx += cos;
-    this.dy += sin;    
+    this.dy += sin;  
+    console.log(`accel: ${cos} ${sin}`);
+
   }
   
   move(speed) {
     let cos = Math.trunc(speed*Math.cos(Math.PI * this.angle/180));
     let sin = Math.trunc(speed*Math.sin(Math.PI * this.angle/180));
     
-    this.dx = cos;
-    this.dy = sin;    
+    this.dx += cos;
+    this.dy += sin;    
+    //console.log(`move : ${cos} ${sin}`);
+
   }  
 
   strafe(speed) {
-      let angle = (this.angle/180 + 90) % 360 ;
-    let cos = Math.trunc(speed*Math.cos(Math.PI * angle));
-    let sin = Math.trunc(speed*Math.sin(Math.PI * angle));
+    let cos = Math.trunc(speed*Math.cos(Math.PI * (this.angle+90)/180));
+    let sin = Math.trunc(speed*Math.sin(Math.PI * (this.angle+90)/180));
     
+    this.dx += cos;
+    this.dy += sin;    
+    //console.log(`strafe: ${cos} ${sin}`);
+  }
 
-    console.log(`strafe ${speed} ${angle} ${cos} ${sin}`);
-
-    this.dx = cos;
-    this.dy = sin;    
+  stop() {
+      this.dx = 0;
+      this.dy = 0;
   }
 
 }
