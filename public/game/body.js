@@ -8,35 +8,39 @@ class Body {
         this.color = { r: 128, g: 128, b: 128};
     }
 
-    draw() {
+    draw(g) {
 
-        push();
-        translate(this.x, this.y);
+        g.push();
+        g.translate(this.x, this.y);
 
         let rotateAngle = 180 / this.angle;
-        rotate(PI / rotateAngle);
+        g.rotate(PI / rotateAngle);
 
         // draw orientation line
-        stroke(0, 255, 255);
-        noFill();
-        line(0, 0,
+        g.stroke(0, 255, 255);
+        g.noFill();
+        g.line(0, 0,
             0 + this.width * 2, 0);
 
         // draw bounding box
-        stroke(0, 0, 0);
-        noFill();
-        rect(-this.width / 2, -this.height / 2, this.width, this.height);
+        g.stroke(0, 0, 0);
+        g.noFill();
+        g.rect(-this.width / 2, -this.height / 2, this.width, this.height);
 
 
 
-        pop();
+        g.pop();
 
         // draw bounding box
-        stroke(100, 100, 100);
+        g.stroke(100, 100, 100);
         //noFill();
         //fill(200,200,200);
         //rect(this.x0(), this.y0(), this.width, this.height);
 
+        
+    }
+
+    draw3D(g) {
         
     }
 
