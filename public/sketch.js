@@ -1,6 +1,6 @@
 const _socket = io.connect();
 
-let game;
+let _game = new TankGame();
 let _playerId;
 
 let _gameTick = 0;
@@ -18,13 +18,19 @@ let _playerColor = {
 _socket.on("login", playerId => login(playerId));
 _socket.on("heartbeat", data => heartbeat(data));
 
+function preload() {
+
+    _game.preload(this);
+}
+
 function setup() {
 
     let viewWidth = windowWidth;
     let viewHeight = windowHeight;
-    game = new TankGame(viewWidth, viewHeight);
+
     createCanvas(viewWidth, viewHeight);
 
+    _game.setup(this);
 
     input = createInput();
     input.position(5, viewHeight - 40);
@@ -45,9 +51,7 @@ function greet() {
 }
 
 function draw() {
-
-
-    game.render();
+    _game.render(this);
 }
 
 function keyPressed() {
@@ -59,21 +63,24 @@ function keyReleased() {
 }
 
 function setKey(keyCode, value) {
+
+    _game.setKey(keyCode, value);
+
     let data = { 'id': _playerName, 'keyCode': keyCode, 'value': value };
-    console.log(data);
+    //console.log(data);
     _socket.emit('setKey', data);
 }
 
 function sendHeartbeat() {
     let data = { id: _playerName, time: new Date().toUTCString()};
-    console.log(data);
+    //console.log(data);
     _socket.emit('heartbeat', data);
 }
 
 function login(playerId) {
     _playerId = playerId;
     let data = { name : _playerName, color: _playerColor} ;
-    game.playerId = _playerName;
+    _game.playerId = _playerName;
     console.log(`login ${data.name}`);
     _socket.emit('login', data)
 }
@@ -83,7 +90,7 @@ function heartbeat(data) {
 
     if (0 == _gameTick % 1000) console.log(data);
 
-    game.fromJson(data);
+    _game.fromJson(data);
 }
 
 setInterval( () => { 

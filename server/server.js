@@ -13,7 +13,7 @@ const GAME_SPEED = 1000/60;
 console.log("--------------------------------------------");
 
 // Setup Game & Regular Loop
-let game = new TankGame(1600,1600);
+let game = new TankGame(3200,3200);
 
 setInterval( () => { 
     game.gameLoop(renderCallback);
@@ -32,7 +32,7 @@ io.sockets.on("connection", socket => {
     });
 
     socket.on('setKey', (data) => {
-        console.log(data);
+        //console.log(data);
         game.recordInput(data.id, data.keyCode, data.value);        
     });
 

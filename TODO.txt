@@ -1,17 +1,42 @@
+
+What's New - Dec 16
+* added 3d modeling
+* enhanced controls (crouch, strafe)
+* enhanced powerups (ammo crates)
+* enhanced player attributes (health, shield, ammo) with power meters
+
+
+What's New - Nov 30:
+* added ammo depletion and ammo packs
+* added shield annimation
+
+What's New - Nov 29:
+* added large field map
+* added shield depletion
+* added speed key
+* added debug output
+* fixed wall glitch
+* fixed respawn
+* fixed kick dead players
+
+- [ TODO ] -------------------------------------------------
+
 NETWORK
 - player login
-- kick dead players
 
+TANK
+-
 
-
-FIELD
-- large field
-
-si- limited shield
-- limited ammo
-- ammo powerups
-- shield powerups
+POWER UPS
 - health
+- shield time
+- tank speed
+- bullet strength
+
+WEAPONS
+- land mines
+- laser
+- spread
 
 BATTLE ROYALE
 - last person standing
@@ -21,16 +46,9 @@ BATTLE ROYALE
 BOTS
 - bots
 
+WORLD
+- load ASCII world and bitmap 
+
 BUGS
 - wall glitch overlapping
 - kick glitch remove id vs creatorid
-
-
-What's New:
-* added large field map
-* added shield depletion
-* added speed key
-* added debug output
-* fixed wall glitch
-* fixed respawn
-* fixed kick dead players
