@@ -1,16 +1,19 @@
-const Tank = require('./tank');
-const Wall = require('./wall');
+const Tank = require('./bodies/tank');
+const Wall = require('./bodies/wall');
 const Player = require('./player');
-const Bullet = require('./bullet');
-const AmmoPack = require('./ammopack');
+const Bullet = require('./bodies/bullet');
+const AmmoPack = require('./bodies/ammopack');
 
 const PlayerInput = require('./playerinput')
+
+const request = require('request');
 
 class TankGame {
 
     constructor(width, height) {
         this.width = width;
         this.height = height;
+        this.gameMap = [];
         this.create();
     }
 
@@ -80,66 +83,58 @@ class TankGame {
         this.startTime = new Date();
 
         this.bullets = [];
-        this.walls = [];
         this.tanks = [];
         this.players = [];
         this.powerups = [];
 
-
-
-        let wallWidth = 20;
-        let wall;
-
-
-
-        wall = new Wall(
-            0 + wallWidth / 2,
-            this.height / 2,
-            wallWidth,
-            this.height, true);
-        this.walls.push(wall);
-
-        wall = new Wall(
-            this.width - wallWidth / 2,
-            0 + this.height / 2,
-            wallWidth,
-            this.height, true);
-        this.walls.push(wall);
-
-        wall = new Wall(
-            this.width / 2,
-            wallWidth / 2,
-            this.width,
-            wallWidth, true);
-        this.walls.push(wall);
-
-        wall = new Wall(
-            0 + this.width / 2,
-            this.height - wallWidth / 2,
-            this.width, wallWidth, true);
-        this.walls.push(wall);
-
-
-
-        this.walls.push(new Wall(
-            this.width / 2, this.height / 2, this.height / 4, 50, false
-        ));
-
-        this.walls.push(new Wall(
-            this.width / 2, this.height / 2 - this.height / 4, 50, this.height / 8, false
-        ));
-
-
-        let bot;
-        //bot = this.addPlayer(this.width / 4, this.height / 2);
-        //bot.id = "Bot 1";
-
-        //bot = this.addPlayer(this.width / 4 * 3, this.height / 2);
-        //bot.id = "Bot 2";
-
         this.spawnAmmoPack();
         this.spawnAmmoPack();
+        
+        this.loadMap();
     }
+    
+    loadMap() {
+
+
+        let gameMap = this.gameMap;
+        
+        let url =
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2ID9e-LirFTyR4EYUAhHKdEY0RymDYYhHyDZvFERl_LvjQZQAOuavee0DmGCirAWHfFjNE-x7jgAc/pub?gid=0&single=true&output=csv';
+          
+request(url, { csv: true }, (err, res, body) => {
+  if (err) { return console.log(err); }
+
+
+            console.log(body);
+            let data = body;
+            
+          // when the HTTP request completes, populate the variable that holds the
+          // earthquake data used in the visualization.
+    
+
+            let csv = data;
+          let rows = csv.split('\n');
+          for (let row = 0; row < rows.length; row++) {
+            let cols = rows[row].split(',');
+            let datatopush = [];
+            for (let col = 0; col < cols.length; col++) {
+              datatopush.push(cols[col].toString()[0]);
+            }
+            //gameMap.push(rows[row]);
+            gameMap.push(datatopush);
+          }
+          //console.log(gameMap);
+ 
+});
+        
+        
+        
+        
+
+      }
+        
+        
+    
 
     recordInput(id, keyCode, value) {
         let player = this.getPlayerById(id);
@@ -197,19 +192,17 @@ class TankGame {
         if (playerInput.colorCycle) {
             tank.color = {
                 r: Math.trunc(255*Math.random()), 
-    g: Math.trunc(255*Math.random()), 
-    b: Math.trunc(255*Math.random())};
+                g: Math.trunc(255*Math.random()), 
+                b: Math.trunc(255*Math.random())};
         }
     }
 
     update() {
 
-        let walls = this.walls;
         let bullets = this.bullets;
         let tanks = this.tanks;
         let players = this.players;
         let powerups = this.powerups;
-
 
 
         { // check for dead players
@@ -231,10 +224,6 @@ class TankGame {
 
 
         { // update objects
-
-            for (let wall of walls) {
-                wall.update();
-            }
 
             for (let tank of tanks) {
                 tank.update();
@@ -259,8 +248,19 @@ class TankGame {
             }
         }
 
+
         // test for wall collisions and react
-        {
+        if (1) {
+            for (let tank of tanks) {
+                // stick tanks
+                if (tank.overlapsWall(this.gameMap)) {
+                    tank.stickWall(this.gameMap);
+                }
+            }            
+        }
+
+        // test for wall collisions and react
+        if (0) {
             for (let wall of walls) {
 
                 for (let tank of tanks) {
@@ -359,11 +359,13 @@ class TankGame {
 
 
     respawnTank(tank) {
+        
         let margin = 100;
         let x0 = margin;
         let x1 = this.width - margin;
         let y0 = margin;
         let y1 = this.height - margin;
+        
         let respawnPoints = [
             [x0, y0],
             [x0, y1],
@@ -373,8 +375,9 @@ class TankGame {
 
         var respawnPoint = respawnPoints[Math.floor(Math.random() * respawnPoints.length)];
 
-        tank.x = respawnPoint[0];
-        tank.y = respawnPoint[1];
+        tank.x = 200;//respawnPoint[0];
+        tank.y = 200;//respawnPoint[1];
+        
     }
 
     render(callback) {

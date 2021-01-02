@@ -1,5 +1,5 @@
 const PlayerInput = require('./playerinput');
-const Tank = require('./tank');
+const Tank = require('./bodies/tank');
 
 class Player {
   constructor(id, x, y) {

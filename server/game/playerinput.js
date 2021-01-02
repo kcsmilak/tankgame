@@ -20,10 +20,10 @@ class PlayerInput {
     setKey(keyCode, value) {
         switch (keyCode) {
             case 37: // left
-                this.turn = -value;
+                this.turn = value;
                 break;
             case 39: // right
-                this.turn = value;
+                this.turn = -value;
                 break;
             case 38: // up
                 this.move = value;
