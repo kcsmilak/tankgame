@@ -3,7 +3,7 @@ class Bullet extends Body {
     constructor(x, y) {
         super(x, y);
 
-        this.diameter = 50;
+        this.diameter = 25;
     }
 
     draw(g) {
@@ -19,7 +19,7 @@ class Bullet extends Body {
 
     draw3D(g) {
         g.push();
-        g.translate(this.x,0,this.y);
+        g.translate(this.x,-100,this.y);
         g.normalMaterial();
         g.fill(200, 200, 200);
         g.stroke(0);

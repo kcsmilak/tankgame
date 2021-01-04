@@ -1,111 +1,94 @@
 class Controller {
-  constructor() {
-    var mx = 0,
-      my = 0;
-    var sensitivityX = 0.15;
-    var sensitivityY = 0.15;
-    this.useMouse = false;
+    constructor() {
+        var mx = 0,
+            my = 0;
+        var sensitivityX = 0.15;
+        var sensitivityY = 0.15;
+        this.useMouse = false;
 
-    this.mx = 0;
-    this.my = 0;
-  }
+        this.mx = 0;
+        this.my = 0;
+    }
 }
-
-
-
-
 
 class Display {
-  constructor(g) {
+    constructor(g) {
 
-    this.resolution = 0.5;
-    
-    this.fps = 0;
-    this.fpss = [60, 60, 60, 60, 60, 60, 60, 60, 60, 60];
-    this.fpssi = 0;
-    this.objectsRendered = 0;
+        this.fpsCounter = new Counter();
 
-    this.g = g;
+        this.resolution = 0.25;
 
-    this.g.background(0, 0, frameCount % 100);
+        this.fps = 0;
+        this.fpss = [60, 60, 60, 60, 60, 60, 60, 60, 60, 60];
+        this.fpssi = 0;
+        this.objectsRendered = 0;
 
-    this.gDebug = g.createGraphics(
-        windowWidth * 0.5 * this.resolution, 
-        windowHeight * 0.5 * this.resolution);
-    this.gMain = g.createGraphics(
-        windowWidth * this.resolution, 
-        windowHeight * 0.5* this.resolution, WEBGL);
-    this.gRadar = g.createGraphics(
-        windowWidth * 0.25* this.resolution, 
-        windowHeight * 0.25* this.resolution, WEBGL);
-    this.gMap = g.createGraphics(
-        windowWidth * 0.5* this.resolution, 
-        windowHeight * 0.5* this.resolution, WEBGL);
-  }
+        this.g = g;
 
-  update() {
-    this.g.background(0, 0, frameCount % 100);
-    this.g.fill(100);
-    this.g.rect(0, 0, 100, 100);
+        g.frameRate(60);
+        this.g.background(0, 0, frameCount % 100);
 
-    this.render();
-  }
+        this.gDebug = g.createGraphics(
+            windowWidth * 1 * this.resolution,
+            windowHeight * 1 * this.resolution);
+        this.gMain = g.createGraphics(
+            windowWidth * this.resolution,
+            windowHeight * this.resolution, WEBGL);
+        this.gRadar = g.createGraphics(
+            windowWidth * 0.25 * this.resolution,
+            windowHeight * 0.25 * this.resolution, WEBGL);
+        this.gMap = g.createGraphics(
+            windowWidth * 0.25 * this.resolution,
+            windowHeight * 0.25 * this.resolution, WEBGL);
+    }
 
-  render() {
+    update() {
+        this.g.background(0, 0, frameCount % 100);
+        this.g.fill(100);
+        this.g.rect(0, 0, 100, 100);
 
-    let g = this.g;
-    g.clear();
-    g.background(128);
+        this.render();
+    }
 
-    this.objectsRendered = 0;
+    render() {
 
-    g.push();
-    g.scale(1/this.resolution);    
-    g.image(this.gMain, 0, 0);
-    g.pop();
+        let g = this.g;
+        g.clear();
+        g.background(128);
 
+        this.objectsRendered = 0;
 
-    g.push();
-    g.scale(1/this.resolution);
-    g.image(this.gRadar, g.width* this.resolution - this.gRadar.width, 0);
-    g.pop();
+        g.push();
+        g.scale(1 / this.resolution);
+        g.image(this.gMain, 0, 0);
+        g.pop();
 
 
-    g.push();
-    g.scale(1/this.resolution);
-    g.image(this.gDebug, 0, g.height*this.resolution - this.gMap.height );
-    g.pop();
-
-    g.push();
-    g.scale(1/this.resolution);
-    g.image(
-        this.gMap, g.width* this.resolution - this.gMap.width, 
-        g.height* this.resolution - this.gMap.height);
-    g.pop();
-
-    this.updateFps();
-
-  }
-
-  updateFps() {
-    if (frameCount % 5 == 0) {
-      let cfps = Math.trunc(getFrameRate());
+        g.push();
+        g.scale(1 / this.resolution);
+        g.image(this.gRadar, g.width * this.resolution - this.gRadar.width, 0);
+        g.pop();
 
 
-      this.fpss[this.fpssi] = cfps;
+        g.push();
+        g.scale(1 / this.resolution);
+        g.image(this.gDebug,
+            0,
+            0);//g.height*this.resolution - this.gDebug.height );
+        g.pop();
 
-      this.fpssi = (this.fpssi + 1) % this.fpss.length;
+        g.push();
+        g.scale(1 / this.resolution);
+        g.image(
+            this.gMap, g.width * this.resolution - this.gMap.width,
+            g.height * this.resolution - this.gMap.height);
+        g.pop();
 
-      let tfps = 0;
-      for (let i = 0; i < this.fpss.length; i++) {
-        tfps += this.fpss[i];
-      }
-
-      this.fps = Math.trunc(tfps / this.fpss.length);
-
+        //this.updateFps();
+        if (frameCount % 5 == 0) {
+            this.fpsCounter.update(Math.trunc(getFrameRate()));
+            this.fps = this.fpsCounter.average();
+        }
 
     }
-  }
-
 }
-

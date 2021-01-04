@@ -162,6 +162,7 @@ class Body {
     let oldMapX = Math.trunc(this.x / 100);
     let oldMapY = Math.trunc(this.y / 100);
 
+    //console.log(`x=${this.x} y=${this.y} x0=${this.x0()} y0=${this.y0()} oldMapY=${oldMapY} frameMapX=${frameMapX}`);
     if (gameMap[oldMapY][frameMapX] == 1) {
       overlap = true;
       //console.log(`hit p=${pos}`);

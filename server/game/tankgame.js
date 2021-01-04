@@ -13,7 +13,18 @@ class TankGame {
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.gameMap = [];
+
+        this.defaultGameMap1 = [
+            [1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 2, 3, 1, 0, 1],
+            [1, 0, 1, 4, 5, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1]
+        ];
+        this.gameMap = this.defaultGameMap1;
         this.create();
     }
 
@@ -89,52 +100,59 @@ class TankGame {
 
         this.spawnAmmoPack();
         this.spawnAmmoPack();
-        
+
         this.loadMap();
     }
-    
+
     loadMap() {
 
 
         let gameMap = this.gameMap;
-        
+
+        for (let row = 0; row < gameMap.length; row++) {
+            gameMap[row].splice(0, gameMap[row].length);
+        }
+        gameMap.splice(0, gameMap.length);
+
+
+
         let url =
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2ID9e-LirFTyR4EYUAhHKdEY0RymDYYhHyDZvFERl_LvjQZQAOuavee0DmGCirAWHfFjNE-x7jgAc/pub?gid=0&single=true&output=csv';
-          
-request(url, { csv: true }, (err, res, body) => {
-  if (err) { return console.log(err); }
+            'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2ID9e-LirFTyR4EYUAhHKdEY0RymDYYhHyDZvFERl_LvjQZQAOuavee0DmGCirAWHfFjNE-x7jgAc/pub?gid=0&single=true&output=csv';
+
+        request(url, { csv: true }, (err, res, body) => {
+            if (err) { return console.log(err); }
 
 
             console.log(body);
             let data = body;
-            
-          // when the HTTP request completes, populate the variable that holds the
-          // earthquake data used in the visualization.
-    
+
+            // when the HTTP request completes, populate the variable that holds the
+            // earthquake data used in the visualization.
+
 
             let csv = data;
-          let rows = csv.split('\n');
-          for (let row = 0; row < rows.length; row++) {
-            let cols = rows[row].split(',');
-            let datatopush = [];
-            for (let col = 0; col < cols.length; col++) {
-              datatopush.push(cols[col].toString()[0]);
+            let rows = csv.split('\n');
+            for (let row = 0; row < rows.length; row++) {
+                let cols = rows[row].split(',');
+                let datatopush = [];
+                for (let col = 0; col < cols.length; col++) {
+                    datatopush.push(cols[col].toString()[0]);
+                }
+                //gameMap.push(rows[row]);
+                gameMap.push(datatopush);
             }
-            //gameMap.push(rows[row]);
-            gameMap.push(datatopush);
-          }
-          //console.log(gameMap);
- 
-});
-        
-        
-        
-        
+            //console.log(gameMap);
 
-      }
-        
-        
-    
+        });
+
+
+
+
+
+    }
+
+
+
 
     recordInput(id, keyCode, value) {
         let player = this.getPlayerById(id);
@@ -162,13 +180,13 @@ request(url, { csv: true }, (err, res, body) => {
         let rotateSpeed = 3;
         if (playerInput.crouch) {
             rotateSpeed /= 4;
-        }        
+        }
         tank.turn(playerInput.turn * rotateSpeed);
 
         let strafeSpeed = 8;
         if (playerInput.z) {
             strafeSpeed /= 2;
-        }           
+        }
         tank.strafe(playerInput.strafe * strafeSpeed);
 
         let moveSpeed = 10;
@@ -191,13 +209,19 @@ request(url, { csv: true }, (err, res, body) => {
 
         if (playerInput.colorCycle) {
             tank.color = {
-                r: Math.trunc(255*Math.random()), 
-                g: Math.trunc(255*Math.random()), 
-                b: Math.trunc(255*Math.random())};
+                r: Math.trunc(255 * Math.random()),
+                g: Math.trunc(255 * Math.random()),
+                b: Math.trunc(255 * Math.random())
+            };
         }
     }
 
     update() {
+
+        if (null === this.gameMap) {
+            console.log("Missing Game Map!!");
+            return;
+        }
 
         let bullets = this.bullets;
         let tanks = this.tanks;
@@ -244,6 +268,7 @@ request(url, { csv: true }, (err, res, body) => {
             for (let key in bullets) {
                 let bullet = bullets[key];
                 if (bullet != null && bullet.updateCount > 80)
+                    console.log("deleting dead bullet");
                     delete bullets[key];
             }
         }
@@ -256,7 +281,19 @@ request(url, { csv: true }, (err, res, body) => {
                 if (tank.overlapsWall(this.gameMap)) {
                     tank.stickWall(this.gameMap);
                 }
-            }            
+            }
+
+            for (let key in bullets) {
+                let bullet = bullets[key];
+                // delete bullets
+                let collision = false;
+                collision = bullet.overlapsWall(this.gameMap)
+                if (collision) {
+                    delete bullets[key];
+                    //bullet.bounce(wall);
+                }
+
+            }
         }
 
         // test for wall collisions and react
@@ -288,7 +325,7 @@ request(url, { csv: true }, (err, res, body) => {
         {
             for (let i in this.powerups) {
 
-                
+
                 let powerup = powerups[i];
                 for (let tank of this.tanks) {
 
@@ -301,7 +338,7 @@ request(url, { csv: true }, (err, res, body) => {
                         delete powerups[i];
 
                         this.spawnAmmoPack();
-                        
+
                     }
                 }
             }
@@ -309,34 +346,36 @@ request(url, { csv: true }, (err, res, body) => {
         }
 
         // test for bullet collisions
-        for (let i in this.bullets) {
-            let bullet = bullets[i];
-            for (let tank of this.tanks) {
+        if (0) {
+            for (let i in this.bullets) {
+                let bullet = bullets[i];
+                for (let tank of this.tanks) {
 
-                if (bullet.overlaps(tank)) {
+                    if (bullet.overlaps(tank)) {
 
-                    let player = this.getPlayerById(bullet.creatorId);
+                        let player = this.getPlayerById(bullet.creatorId);
 
-                    if (tank.shield) {
-                        bullet.bounce(tank);
-                    } else {
-                        if (1) { //if (player.id != tank.id) {
+                        if (tank.shield) {
+                            bullet.bounce(tank);
+                        } else {
+                            if (1) { //if (player.id != tank.id) {
 
-                            tank.hit(10);
+                                tank.hit(10);
 
-                            if (tank.isKilled()) {
-                                // respawn shot tank  
-                                this.respawnTank(tank);
-                                tank.heal();
+                                if (tank.isKilled()) {
+                                    // respawn shot tank  
+                                    this.respawnTank(tank);
+                                    tank.heal();
 
-                                // reward shooter if not the same player
-                                if (player.id != tank.id) {
-                                    player.score += 1;
+                                    // reward shooter if not the same player
+                                    if (player.id != tank.id) {
+                                        player.score += 1;
+                                    }
                                 }
                             }
-                        }
 
-                        delete bullets[i];
+                            delete bullets[i];
+                        }
                     }
                 }
             }
@@ -349,7 +388,7 @@ request(url, { csv: true }, (err, res, body) => {
     getSpawnPoint() {
         let x = this.width * Math.random();
         let y = this.width * Math.random();
-        return { x:x, y:y };        
+        return { x: x, y: y };
     }
 
     spawnAmmoPack() {
@@ -359,13 +398,13 @@ request(url, { csv: true }, (err, res, body) => {
 
 
     respawnTank(tank) {
-        
+
         let margin = 100;
         let x0 = margin;
         let x1 = this.width - margin;
         let y0 = margin;
         let y1 = this.height - margin;
-        
+
         let respawnPoints = [
             [x0, y0],
             [x0, y1],
@@ -375,14 +414,18 @@ request(url, { csv: true }, (err, res, body) => {
 
         var respawnPoint = respawnPoints[Math.floor(Math.random() * respawnPoints.length)];
 
-        tank.x = 200;//respawnPoint[0];
-        tank.y = 200;//respawnPoint[1];
-        
+        tank.x = 300;//respawnPoint[0];
+        tank.y = 300;//respawnPoint[1];
+
     }
 
     render(callback) {
-        let data = this.toJson();
-        callback(data);
+        //let data = this.toJson();
+
+        let data = { tanks: this.tanks, bullets: this.bullets }
+
+        let json = JSON.stringify(data);
+        callback(json);
     }
 
     fire(tank) {

@@ -71,3 +71,29 @@ class Map {
 
 
 
+class Counter {
+    constructor() {
+        this.fps = 0;
+        this.fpss = [60, 60, 60, 60, 60, 60, 60, 60, 60, 60];
+        this.fpssi = 0;
+    }
+
+    average() {
+        return this.fps;
+    }
+
+    update(value) {
+        let cfps = value;
+
+        this.fpss[this.fpssi] = cfps;
+
+        this.fpssi = (this.fpssi + 1) % this.fpss.length;
+
+        let tfps = 0;
+        for (let i = 0; i < this.fpss.length; i++) {
+            tfps += this.fpss[i];
+        }
+
+        this.fps = Math.trunc(tfps / this.fpss.length);
+    }
+}

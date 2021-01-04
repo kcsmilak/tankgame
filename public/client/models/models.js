@@ -29,6 +29,7 @@ class MapModel {
       console.log("Made new camera");
     }    
 
+    debugString += `\ncam t=${camera.theta} dof=${camera.dof} fov=${camera.fov}\n`;
 
 
     for (let rowIndex = 0; rowIndex < gameMap.length; rowIndex++) {
@@ -56,18 +57,23 @@ class MapModel {
         Math.pow(Math.abs(dy), 2)));
         if (distance > camera.dof) skip = true;
 
+
         let theta = (camera.theta + 90) % 360;
         let gamma = Math.atan2(-dy, dx) * 180 / Math.PI;
         let beta = (theta - (gamma));
         if (beta > 180) beta -= 360;
         if (beta > camera.fov || beta < -camera.fov) skip = true;
         
+        //debugString += `x=${posx} y=${posy} dx=${dx.toFixed(0)} dy${dy.toFixed(0)} t=${theta.toFixed(0)} g=${gamma.toFixed(0)} b=${beta.toFixed(0)} skip=${skip}\n`;
+
         if (skip) continue;
 
         if (camera.wallsOnly && cell != 1) continue;
 
 
-        this.objectsRendered++;
+        _objectsRendered++;
+
+        //if (_objectsRendered > 300 ) continue;
 
         g.push();
 
@@ -138,6 +144,12 @@ class MapModel {
 
       }
     }
+
+    g.push();
+    g.translate(-camera.x,0,-camera.y);
+    g.fill(200);
+    g.sphere(10);
+    g.pop();
 
 
     g.pop();

@@ -11,6 +11,8 @@ let textures = [];
 
 let _playerId;
 let _gameTick = 0;
+let _objectsRendered = 0;
+let _serverHeartbeats = 0;
 
 let _playerName = "(Player Unknown #" + Math.trunc(100*Math.random()) + ")" ;
 

@@ -13,7 +13,7 @@ class Tank extends Body {
     this.shield = false;
 
     this.health = 100;
-    this.ammo = 30;
+    this.ammo = 100;
     this.shieldPower = 100;
     this.shieldCoolDown = 0;
     this.speedPower = 100;
@@ -54,7 +54,7 @@ class Tank extends Body {
         let w = tank.width;
         let h = tank.height;
         let angle = tank.angle;
-        //console.log(`fire! ${x},${y}@${angle}`);
+        console.log(`fire! ${x},${y}@${angle}`);
 
 
         let speed = 10;
@@ -68,7 +68,7 @@ class Tank extends Body {
         let dx = speed * cos;
         let dy = speed * sin;
 
-        //console.log(`fire ${tank.id} ${x},${y} - ${dx},${dy}`);
+        console.log(`fire ${tank.id} y=${x.toFixed(2)} x=${y.toFixed(2)} : dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} angle=${angle}`);
 
 
         let bullet = new Bullet(x, y, dx, dy);

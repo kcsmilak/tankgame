@@ -8,7 +8,7 @@ const io = require('socket.io')(server);
 const TankGame = require("./game/tankgame");
 const port = process.env.port || 8080;
 
-const GAME_SPEED = 1000/60;
+const GAME_SPEED = 1000/30;
 
 console.log("--------------------------------------------");
 
