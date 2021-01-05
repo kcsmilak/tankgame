@@ -109,10 +109,7 @@ class TankGame {
 
         let gameMap = this.gameMap;
 
-        for (let row = 0; row < gameMap.length; row++) {
-            gameMap[row].splice(0, gameMap[row].length);
-        }
-        gameMap.splice(0, gameMap.length);
+
 
 
 
@@ -122,6 +119,10 @@ class TankGame {
         request(url, { csv: true }, (err, res, body) => {
             if (err) { return console.log(err); }
 
+            for (let row = 0; row < gameMap.length; row++) {
+                gameMap[row].splice(0, gameMap[row].length);
+            }
+            gameMap.splice(0, gameMap.length);
 
             console.log(body);
             let data = body;
@@ -177,19 +178,19 @@ class TankGame {
             playerInput.fire = false;
         }
 
-        let rotateSpeed = 3;
+        let rotateSpeed = 6;
         if (playerInput.crouch) {
             rotateSpeed /= 4;
         }
         tank.turn(playerInput.turn * rotateSpeed);
 
-        let strafeSpeed = 8;
+        let strafeSpeed = 20;
         if (playerInput.z) {
             strafeSpeed /= 2;
         }
         tank.strafe(playerInput.strafe * strafeSpeed);
 
-        let moveSpeed = 10;
+        let moveSpeed = 20;
         if (playerInput.speed) {
             moveSpeed /= 2;
         }
@@ -237,7 +238,7 @@ class TankGame {
 
                 //let timeGap = nowTime.  .getTime() - playerTime.getTime() ; 
                 let timeGap = nowTime - playerTime;
-                if (timeGap > 1000 * 5) {
+                if (timeGap > 1000 * 10) {
                     console.log(`dropping player ${player.id}`);
                     this.removePlayer(player.id);
                 } else {
@@ -253,9 +254,13 @@ class TankGame {
                 tank.update();
             }
 
-            for (let bullet of bullets) {
-                if (bullet != null)
+            for (let key in bullets) {
+                let bullet = bullets[key];
+
+                if (bullet != null) {
+                    //console.log(`updating bullet ${bullet}`);
                     bullet.update();
+                }
             }
 
             for (let powerup of powerups) {
@@ -267,9 +272,10 @@ class TankGame {
         { // delete old bullets
             for (let key in bullets) {
                 let bullet = bullets[key];
-                if (bullet != null && bullet.updateCount > 80)
+                if (bullet != null && bullet.updateCount > 200) {
                     console.log("deleting dead bullet");
                     delete bullets[key];
+                }
             }
         }
 
@@ -289,8 +295,8 @@ class TankGame {
                 let collision = false;
                 collision = bullet.overlapsWall(this.gameMap)
                 if (collision) {
-                    delete bullets[key];
-                    //bullet.bounce(wall);
+                    //delete bullets[key];
+                    bullet.bounceWall(this.gameMap);
                 }
 
             }
@@ -346,7 +352,7 @@ class TankGame {
         }
 
         // test for bullet collisions
-        if (0) {
+        if (1) {
             for (let i in this.bullets) {
                 let bullet = bullets[i];
                 for (let tank of this.tanks) {
@@ -432,8 +438,10 @@ class TankGame {
 
         let bullet = tank.fire();
         let bullets = this.bullets;
-        if (null != bullet)
+        if (null != bullet) {
+            console.log(`adding bullet ${bullet}`);
             bullets.push(bullet);
+        }
     }
 
     reset() {

@@ -57,16 +57,16 @@ class Tank extends Body {
         console.log(`fire! ${x},${y}@${angle}`);
 
 
-        let speed = 10;
+        let speed = 40;
 
-        let cos = Math.cos(Math.PI * angle / 180);
-        let sin = Math.sin(Math.PI * angle / 180);
+        let cos = Math.cos(Math.PI * (angle+90) / 180);
+        let sin = Math.sin(Math.PI * (angle+90) / 180);
 
-        x = tank.x + tank.width * cos;
-        y = tank.y + tank.height * sin;
+        x = tank.x + (tank.width * cos*.8);
+        y = tank.y - (tank.height * sin*.8);
 
         let dx = speed * cos;
-        let dy = speed * sin;
+        let dy = - speed * sin;
 
         console.log(`fire ${tank.id} y=${x.toFixed(2)} x=${y.toFixed(2)} : dx=${dx.toFixed(2)} dy=${dy.toFixed(2)} angle=${angle}`);
 

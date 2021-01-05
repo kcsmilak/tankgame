@@ -3,7 +3,7 @@ class Bullet extends Body {
     constructor(x, y) {
         super(x, y);
 
-        this.diameter = 25;
+        this.diameter = 10;
     }
 
     draw(g) {
@@ -27,5 +27,10 @@ class Bullet extends Body {
         g.pop();
     }
 
+    update() {
+        console.log("updating bullet");
+        this.update();
+
+    }
 }
 

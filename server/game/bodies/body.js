@@ -21,6 +21,10 @@ class Body {
     this.width = 1;
   }
 
+  toString() {
+      return JSON.stringify(this);
+  }
+
   update() { 
     this.x += this.dx + this.sdx;
     this.y += this.dy + this.sdy;
@@ -139,6 +143,12 @@ class Body {
     let oldMapX = Math.trunc(this.x / 100);
     let oldMapY = Math.trunc(this.y / 100);
 
+    // test out of range
+    if (frameMapY < 0 || frameMapY >= gameMap.length) {
+        console.log("Out of range Y");
+        return true;
+    }
+
     if (gameMap[frameMapY][oldMapX] == 1) {
       overlap = true;
     }
@@ -162,6 +172,12 @@ class Body {
     let oldMapX = Math.trunc(this.x / 100);
     let oldMapY = Math.trunc(this.y / 100);
 
+
+    // test out of range
+    if (oldMapY < 0 || oldMapY >= gameMap.length) {
+        console.log("Out of range Y");
+        return true;
+    }    
     //console.log(`x=${this.x} y=${this.y} x0=${this.x0()} y0=${this.y0()} oldMapY=${oldMapY} frameMapX=${frameMapX}`);
     if (gameMap[oldMapY][frameMapX] == 1) {
       overlap = true;
@@ -174,6 +190,23 @@ class Body {
   
   bounceWall(gameMap) {
       
+    // move the object back
+    this.x -= this.dx;
+    this.y -= this.dy;
+    
+    // move just the y side
+    this.y += this.dy;
+    if (this.overlapWallY(gameMap)) {
+      this.y -= this.dy;
+      this.dy *= -1;
+
+    }
+    
+    this.x += this.dx;    
+    if (this.overlapWallX(gameMap)) {
+      this.x -= this.dx;
+      this.dx *= -1;
+    }         
   }
   
   stickWall(gameMap) {
