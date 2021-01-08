@@ -10,6 +10,7 @@ class Body {
     this.sdy = 0;
     
     this.angle = 0;
+    this.pitch = 0;
     
     this.id = Math.floor(Math.random()*10000);
 
@@ -232,6 +233,10 @@ class Body {
   
   turn(speed) {
     this.angle = (this.angle + speed) % 360;
+  }
+
+  pitch(speed) {
+      this.alpha = (this.alpha + speed) % 360;
   }
   
   accelerate(speed) {

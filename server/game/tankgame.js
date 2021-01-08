@@ -182,7 +182,41 @@ class TankGame {
         if (playerInput.crouch) {
             rotateSpeed /= 4;
         }
+
+        if (1) {
+            let turnAmount = 0;
+            if (playerInput.mx > 0) {
+                playerInput.mx--;
+            }
+            if (playerInput.mx < 0) {
+                playerInput.mx++;
+            }
+            if (playerInput.mx !=0 ) {
+                turnAmount = -playerInput.mx * 0.15;
+            }
+            tank.turn(turnAmount);
+        } else {
+            playerInput.turn = 0;
+        }
+
         tank.turn(playerInput.turn * rotateSpeed);
+
+        if (1) {
+            let speed = 0;
+            if (playerInput.my > 0) {
+                playerInput.my--;
+            }
+            if (playerInput.my < 0) {
+                playerInput.my++;
+            }
+            if (playerInput.mx !=0 ) {
+                speed = -playerInput.my * 0.15;
+            }
+            speed = Math.max(-15, Math.min(30, speed));            
+            //tank.pitch(speed);
+            tank.alpha += speed;
+        }
+
 
         let strafeSpeed = 20;
         if (playerInput.z) {
@@ -215,6 +249,8 @@ class TankGame {
                 b: Math.trunc(255 * Math.random())
             };
         }
+
+
     }
 
     update() {
@@ -272,7 +308,7 @@ class TankGame {
         { // delete old bullets
             for (let key in bullets) {
                 let bullet = bullets[key];
-                if (bullet != null && bullet.updateCount > 200) {
+                if (bullet != null && bullet.updateCount > 100) {
                     console.log("deleting dead bullet");
                     delete bullets[key];
                 }

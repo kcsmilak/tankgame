@@ -14,6 +14,8 @@ let _gameTick = 0;
 let _objectsRendered = 0;
 let _serverHeartbeats = 0;
 
+let _useMouse = 0;
+
 let _playerName = "(Player Unknown #" + Math.trunc(100*Math.random()) + ")" ;
 
 class ServerConnection {
@@ -183,12 +185,17 @@ function draw() {
     _gameClient.render();
 }
 
+
 /* mouse controls */
 {
   document.body.addEventListener("mousemove", function(e) {
-    if (console.useMouse) {
-      console.mx = Math.max(-100, Math.min(e.movementX, 100));
-      console.my = Math.max(-100, Math.min(e.movementY, 100));
+    if (_useMouse) {
+      //console.mx = 
+      let mx = Math.max(-100, Math.min(e.movementX, 100));
+      //console.my = 
+      let my = Math.max(-100, Math.min(e.movementY, 100));
+      console.log("mouse" + e);
+      setKey("mouse", { mx:mx, my:my});
     }
   });
 
@@ -196,7 +203,7 @@ function draw() {
     //got this stuff from Willard's Minecraft
     if (canvas.requestPointerLock) {
       canvas.requestPointerLock();
-      useMouse = true;
+      _useMouse = true;
     }
   }
 

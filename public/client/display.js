@@ -14,9 +14,12 @@ class Controller {
 class Display {
     constructor(g) {
 
+        this.fpsMeter = new FpsMeterModel();
+        this.serverUpdateMeter = new ServerUpdateMeterModel();
+
         this.fpsCounter = new Counter();
 
-        this.resolution = 0.25;
+        this.resolution = 1;
 
         this.fps = 0;
         this.fpss = [60, 60, 60, 60, 60, 60, 60, 60, 60, 60];
@@ -46,6 +49,8 @@ class Display {
         this.g.background(0, 0, frameCount % 100);
         this.g.fill(100);
         this.g.rect(0, 0, 100, 100);
+
+        this.fpsMeter.update();
 
         this.render();
     }
@@ -89,6 +94,9 @@ class Display {
             this.fpsCounter.update(Math.trunc(getFrameRate()));
             this.fps = this.fpsCounter.average();
         }
+
+        this.fpsMeter.render(g, 0, g.height - 100);
+        this.serverUpdateMeter.render(g, 200, g.height - 100);
 
     }
 }

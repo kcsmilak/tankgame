@@ -55,6 +55,7 @@ class GameClient {
                     this.playerModel.y = json.y;
                     this.playerModel.theta = json.theta;
                     this.playerModel.alpha = json.alpha;
+                    if (json.alpha !=0 ) console.log(json);
                 }
 
 
@@ -71,6 +72,9 @@ class GameClient {
         }
 
         _serverHeartbeats++;
+        if (null != this.display) { 
+          this.display.serverUpdateMeter.update();
+        }
     }
 
     render() {

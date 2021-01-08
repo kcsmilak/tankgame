@@ -60,7 +60,7 @@ class MainView {
 
     resetCamera() {
         this.camera.dof = 3000;
-        this.camera.fov = 45;
+        this.camera.fov = 65;
         this.camera.z = 150;
         this.camera.x = 0;
         this.camera.y = 0;
@@ -129,7 +129,7 @@ class RadarView {
         this.camera = new Camera();
         this.camera.z = 800;
         this.camera.fov = 180;
-        this.camera.dof = g.width * 20.5;
+        this.camera.dof = 800;//g.width * 5;
         this.camera.removePerspective = 0;
         this.camera.useClipping = 1;
 
@@ -142,7 +142,7 @@ class RadarView {
         g.push();
         g.clear();
         g.fill(255, 255, 255, 200);
-        g.circle(0, 0, g.width * 0.98);
+        g.circle(0, 0, g.width * 0.8);
         //g.background(220);
         //g.ortho();
 
@@ -158,7 +158,7 @@ class RadarView {
 
         this.camera.set(g);
 
-        let scale = 32;
+        let scale = 4;
         g.ortho(-g.width * scale, g.width * scale, -g.height * scale, g.height * scale, -2000, 2000);
 
 
@@ -187,7 +187,7 @@ class MapView {
         this.mapModel = mapModel;
         this.camera = new Camera();
         this.camera.fov = 180;
-        this.camera.dof = 600;
+        this.camera.dof = 800;
         this.camera.wallsOnly = 0;
         this.camera.removePerspective = 0;
         this.camera.useClipping = 1;
@@ -216,7 +216,7 @@ class MapView {
 
         this.camera.set(g);
 
-        let scale = 8;
+        let scale = 2;
         g.ortho(-g.width * scale, g.width * scale, -g.height * scale, g.height * scale, 0, 2000);
 
 

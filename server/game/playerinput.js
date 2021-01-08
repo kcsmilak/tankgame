@@ -15,6 +15,9 @@ class PlayerInput {
         this.colorCycle = false;
 
         this.heartbeatTime = null;
+
+        this.mx = 0;
+        this.my = 0;
     }
 
     setKey(keyCode, value) {
@@ -66,6 +69,11 @@ class PlayerInput {
 
             case 82:  //r
                 this.reset = value;
+                break;
+
+            case "mouse":
+                this.mx = value.mx;
+                this.my = value.my;
                 break;
 
 
