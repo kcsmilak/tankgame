@@ -2,8 +2,12 @@ class PlayerInput {
     constructor() {
 
         this.turn = 0;
-        this.move = 0;
-        this.strafe = 0;
+        this.accelerate = false;
+        this.decelerate = false;
+
+        this.strafeLeft = false;
+        this.strafeRight = false;
+
         
         this.turbo = false;
         this.crouch = false;
@@ -43,16 +47,16 @@ class PlayerInput {
                 break;
 
             case 65:  // a
-                this.strafe = -value;
+                this.strafeLeft = value;
                 break;
             case 68:  // d
-                this.strafe = value;
+                this.strafeRight = value;
                 break;
             case 87:  // w
-                this.move = value;
+                this.accelerate = value;
                 break;
             case 83:  // s
-                this.move = -value;
+                this.decelerate = -value;
                 break;
             case 69:  // e
                 this.fire = value;

@@ -20,7 +20,7 @@ class DebugView {
         let display = gameClient.display;
         debugString += `\n`;
         debugString += `\ncnt:${frameCount}`;
-        debugString += `\nfps:${display.fps}`;
+        //debugString += `\nfps:${display.fps}`;
         debugString += `\nobj:${_objectsRendered}`;
         debugString += `\nsrv:${_serverHeartbeats}`;
         debugString += `\n`;
@@ -59,7 +59,7 @@ class MainView {
     }
 
     resetCamera() {
-        this.camera.dof = 3000;
+        this.camera.dof = 1500;
         this.camera.fov = 65;
         this.camera.z = 150;
         this.camera.x = 0;
@@ -69,7 +69,7 @@ class MainView {
         this.camera.wallsOnly = 0;
     }
 
-    render(playerModel, players, bullets) {
+    render(playerModel, players, bullets, powerups = null) {
 
         let g = this.g;
 
@@ -85,7 +85,7 @@ class MainView {
         this.camera.set(g);
 
         this.mapModel.render(g, this.camera);
-        this.coordinatesModel.render(g);
+        //this.coordinatesModel.render(g);
 
         for (let player of players) {
             if (playerModel !== player)
@@ -96,10 +96,14 @@ class MainView {
             bullet.draw3D(g);
         }
 
+        for (let powerup of powerups) {
+            powerup.draw3D(g);
+        }
+
 
         g.push();
         if (0) {
-            g.translate(player.x, 0, player.y);
+            g.translate(playerModel.x, 0, playerModel.y);
             g.fill(0, 0, 0);
             g.sphere(2200, 2200);
             g.fill(0, 0, 0, 100);
@@ -135,7 +139,7 @@ class RadarView {
 
     }
 
-    render(playerModel, players) {
+    render(playerModel, players, bullets, powerups = null) {
 
         let g = this.g;
 
@@ -169,7 +173,15 @@ class RadarView {
             player.render(g);
         }
 
+        for (let bullet of bullets) {
+            bullet.draw3D(g);
+        }
 
+        if (powerups != null) {
+            for (let powerup of powerups) {
+                powerup.draw3D(g);
+            }
+        }
 
         g.pop();
 
@@ -186,15 +198,15 @@ class MapView {
         this.coordinatesModel = new CoordinatesModel();
         this.mapModel = mapModel;
         this.camera = new Camera();
-        this.camera.fov = 180;
-        this.camera.dof = 800;
+        this.camera.fov = 180;//65;
+        this.camera.dof = 2500;
         this.camera.wallsOnly = 0;
         this.camera.removePerspective = 0;
-        this.camera.useClipping = 1;
+        this.camera.useClipping = 0;
         this.camera.z = 1500;
     }
 
-    render(playerModel, players, bullets) {
+    render(playerModel, players, bullets, powerups = null) {
         let g = this.g;
 
         g.push();
@@ -217,19 +229,26 @@ class MapView {
         this.camera.set(g);
 
         let scale = 2;
-        g.ortho(-g.width * scale, g.width * scale, -g.height * scale, g.height * scale, 0, 2000);
+        //g.ortho(-g.width * scale, g.width * scale, -g.height * scale, g.height * scale, 0, 2000);
+        g.ortho(-g.width * scale, g.width * scale, -g.height * scale, g.height * scale, 0, 2500);
 
 
         this.mapModel.render(g, this.camera);
-        this.coordinatesModel.render(g);
-        //playerModel.render(g);
+        //this.coordinatesModel.render(g);
+        playerModel.render(g);
 
         for (let player of players) {
-            player.render(g);
+            //player.render(g);
         }
 
         for (let bullet of bullets) {
-            bullet.draw3D(g);
+            //bullet.draw3D(g);
+        }
+
+        if (powerups != null) {
+            for (let powerup of powerups) {
+                powerup.draw3D(g);
+            }
         }
 
         g.pop();

@@ -1,7 +1,7 @@
 
 
 class AmmoPack extends Powerup {
-  constructor(x, y, img) {
+  constructor(x, y, img = null) {
     super(x,y);
     //this.img = loadImage('assets/icons/ammo.png');
     //this.img = _ammoImg;
@@ -25,15 +25,15 @@ class AmmoPack extends Powerup {
   draw3D(g) {
       g.push();
       g.stroke(0);
-      g.translate(this.x, this.y);
+      g.translate(this.x, -100, this.y);
       g.fill(0,255,0,100);
       g.rotateZ(frameCount * 0.01);
       g.rotateX(frameCount * 0.01);
       g.box(40);
-      g.texture(this.img);
+      if (this.img != null)
+        g.texture(this.img);
       g.box(42);
       g.pop();
-      //console.log('ack');
   }
 
   fromJson(jsonObject) {

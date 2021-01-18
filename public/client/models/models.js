@@ -35,6 +35,9 @@ class MapModel {
         for (let rowIndex = 0; rowIndex < gameMap.length; rowIndex++) {
             for (let columnIndex = 0; columnIndex < gameMap[rowIndex].length;
                 columnIndex++) {
+                
+                //if (_objectsRendered > 800 ) continue;
+
                 let cell = gameMap[rowIndex][columnIndex];
 
                 let scaleX = 100;
@@ -73,7 +76,6 @@ class MapModel {
 
                 _objectsRendered++;
 
-                //if (_objectsRendered > 300 ) continue;
 
                 g.push();
 
@@ -217,6 +219,24 @@ class CoordinatesModel {
 }
 
 
+class GenericMeterModel {
+  constructor(name) {
+    this.history = new CounterHistory();
+    this.meter = new MeterModel(this.history,name);
+  }
+  
+  update(value) {
+    this.history.addValue(value);
+  }
+  
+  render(g, x=0,y=0) {
+    this.meter.render(g, x,y);
+  }
+  
+  setMaxValue(value) {
+      this.history.maxValue = value;
+  }
+}
 
 class FpsMeterModel {
   constructor() {
@@ -264,23 +284,21 @@ class MeterModel {
 
         this.stroke = true;
 
-        this.g = createGraphics(this.width, this.height);
+        //this.g = canvas.createGraphics(this.width, this.height);
 
     }
 
-    render(canvas = this.canvas, x = 0, y = 0) {
-
-        canvas.push();
-        canvas.translate(x, y);
-        let g = this.g;
-        g.clear();
-        //let g = canvas.createGraphics(this.width, this.height);
-
-        let width = g.width;
-        let height = g.height;
+    render(g, x = 0, y = 0) {
 
         g.push();
-        g.background(this.backgroundColor);
+        g.translate(x, y);
+
+        let width = this.width;
+        let height = this.height;
+
+        g.noStroke();
+        g.fill(this.backgroundColor);
+        g.rect(0,0, width, height);
 
         g.fill(this.foregroundColor);
         if (!this.stroke) g.noStroke();
@@ -300,8 +318,6 @@ class MeterModel {
         g.text(this.title, textMargin, textMargin);
         g.text(`${this.counter.average().toFixed(0)}`, textMargin, textSize + textMargin);
         g.pop();
-        canvas.image(g, 0, 0);
-        canvas.pop();
     }
 }
 

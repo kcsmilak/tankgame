@@ -8,6 +8,22 @@ const PlayerInput = require('./playerinput')
 
 const request = require('request');
 
+class GameMap {
+    constructor() {
+        this.defaultMapData1 = [
+            [1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 2, 3, 1, 0, 1],
+            [1, 0, 1, 4, 5, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1]
+        ];
+        this.mapData = this.defaultMapData1;        
+    }
+}
+
 class TankGame {
 
     constructor(width, height) {
@@ -98,10 +114,11 @@ class TankGame {
         this.players = [];
         this.powerups = [];
 
+        this.loadMap();
+
         this.spawnAmmoPack();
         this.spawnAmmoPack();
 
-        this.loadMap();
     }
 
     loadMap() {
@@ -179,7 +196,7 @@ class TankGame {
         }
 
         let rotateSpeed = 6;
-        if (playerInput.crouch) {
+        if (playerInput.speed) {
             rotateSpeed /= 4;
         }
 
@@ -219,16 +236,16 @@ class TankGame {
 
 
         let strafeSpeed = 20;
-        if (playerInput.z) {
+        if (playerInput.speed) {
             strafeSpeed /= 2;
         }
-        tank.strafe(playerInput.strafe * strafeSpeed);
+        tank.strafe((playerInput.strafeLeft?-1:0) * strafeSpeed + (playerInput.strafeRight?1:0) * strafeSpeed);
 
         let moveSpeed = 20;
         if (playerInput.speed) {
             moveSpeed /= 2;
         }
-        tank.move(playerInput.move * moveSpeed);
+        tank.move((playerInput.decelerate?-1:0) * moveSpeed + (playerInput.accelerate?1:0) * moveSpeed);
 
         if (playerInput.shield) {
             tank.shield = true;
@@ -428,9 +445,26 @@ class TankGame {
 
 
     getSpawnPoint() {
-        let x = this.width * Math.random();
-        let y = this.width * Math.random();
-        return { x: x, y: y };
+
+        let mapData = this.gameMap;
+
+        let x = 0;
+        let y = 0;
+
+        let scale = 100;
+        let height = mapData.length ;//* scale;
+        let width = mapData[0].length ;//* scale;
+
+        while (true) {
+            x = Math.trunc(width * Math.random());
+            y = Math.trunc(height * Math.random());
+
+            if (mapData[y][x] != 1) break
+        }
+
+        let point = { x: x * scale - scale/2, y: y * scale - scale/2 };
+        console.log(`selected spawn point: ${point.x},${point.y}`);
+        return point;
     }
 
     spawnAmmoPack() {
@@ -464,7 +498,12 @@ class TankGame {
     render(callback) {
         //let data = this.toJson();
 
-        let data = { tanks: this.tanks, bullets: this.bullets }
+        let data = { 
+            tanks: this.tanks, 
+            bullets: this.bullets,
+            players: this.players,
+            powerups: this.powerups 
+        }
 
         let json = JSON.stringify(data);
         callback(json);
