@@ -117,6 +117,7 @@ class GameClient {
                     this.playerModel.y = json.y;
                     this.playerModel.theta = json.theta;
                     this.playerModel.alpha = json.alpha;
+                    this.playerModel.crouch = json.crouch;
                     if (json.alpha != 0) console.log(json);
                 }
 

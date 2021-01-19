@@ -1,7 +1,12 @@
 class PlayerInput {
     constructor() {
 
-        this.turn = 0;
+        this.turnLeft = false;
+        this.turnRight = false;
+
+        this.pitchDown = false;
+        this.putchUp = false;
+
         this.accelerate = false;
         this.decelerate = false;
 
@@ -27,23 +32,23 @@ class PlayerInput {
     setKey(keyCode, value) {
         switch (keyCode) {
             case 37: // left
-                this.turn = value;
+                this.turnLeft = value;
                 break;
             case 39: // right
-                this.turn = -value;
+                this.turnRight = -value;
                 break;
             case 38: // up
-                this.move = value;
+                this.putchUp = value;
                 break;
             case 40:  // down
-                this.move = -value;
+                this.pitchDown = -value;
                 break;
             case 32: // SPACE
                 this.fire = value;
                 break;
 
             case 16: // LEFT SHIFT
-                this.speed = value;
+                this.crouch = value;
                 break;
 
             case 65:  // a

@@ -45,6 +45,7 @@ class TankGame {
     }
 
     gameLoop(renderCallback) {
+
         // process input
         for (let player of this.players) {
             this.processInput(player);
@@ -188,19 +189,32 @@ class TankGame {
         let playerInput = player.playerInput;
         let tank = player.tank;
 
+        let speedModifier = 1;
+
+        //TODO: move these to after process input?
+        if (tank.overlapsMapType(this.gameMap,2)) {
+            speedModifier = 0.3;
+        } 
+
+
+        // record propertied of the input into the tank object
+        tank.crouch = playerInput.crouch;
+
+
         tank.stop();
 
         if (playerInput.fire && !playerInput.shield) {
             this.fire(tank);
+            // require multiple clicks for firing
             playerInput.fire = false;
         }
 
         let rotateSpeed = 6;
-        if (playerInput.speed) {
-            rotateSpeed /= 4;
+        if (playerInput.crouch) {
+            rotateSpeed /= 8;
         }
 
-        if (1) {
+        if (1) { // handle mouse turn
             let turnAmount = 0;
             if (playerInput.mx > 0) {
                 playerInput.mx--;
@@ -212,11 +226,14 @@ class TankGame {
                 turnAmount = -playerInput.mx * 0.15;
             }
             tank.turn(turnAmount);
-        } else {
-            playerInput.turn = 0;
         }
 
-        tank.turn(playerInput.turn * rotateSpeed);
+        let turnSpeed = 10;
+        if (playerInput.crouch) {
+            turnSpeed /= 4;
+        }
+        tank.turn((playerInput.turnLeft?1:0) * turnSpeed + (playerInput.turnRight?-1:0) * turnSpeed);
+
 
         if (1) {
             let speed = 0;
@@ -235,14 +252,14 @@ class TankGame {
         }
 
 
-        let strafeSpeed = 20;
-        if (playerInput.speed) {
-            strafeSpeed /= 2;
+        let strafeSpeed = 20 * speedModifier;
+        if (playerInput.crouch) {
+            strafeSpeed /= 4;
         }
         tank.strafe((playerInput.strafeLeft?-1:0) * strafeSpeed + (playerInput.strafeRight?1:0) * strafeSpeed);
 
-        let moveSpeed = 20;
-        if (playerInput.speed) {
+        let moveSpeed = 20 * speedModifier;
+        if (playerInput.crouch) {
             moveSpeed /= 2;
         }
         tank.move((playerInput.decelerate?-1:0) * moveSpeed + (playerInput.accelerate?1:0) * moveSpeed);
@@ -256,7 +273,6 @@ class TankGame {
         if (playerInput.reset) {
             this.respawnTank(tank);
             playerInput.reset = false;
-
         }
 
         if (playerInput.colorCycle) {

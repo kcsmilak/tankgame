@@ -56,12 +56,14 @@ class MainView {
         this.camera = new Camera();
         this.resetCamera();
         this.cameraOffset = 100;
+
+        this.defaultZ = 150;
     }
 
     resetCamera() {
         this.camera.dof = 1500;
         this.camera.fov = 65;
-        this.camera.z = 150;
+        this.camera.z = this.defaultZ;
         this.camera.x = 0;
         this.camera.y = 0;
         this.camera.theta = 0;
@@ -81,15 +83,23 @@ class MainView {
         this.camera.y = (playerModel.y + this.cameraOffset * Math.cos(playerModel.theta * Math.PI / 180));
         this.camera.theta = playerModel.theta;
         this.camera.alpha = playerModel.alpha;
-
+        
+        this.camera.z = this.defaultZ - (playerModel.crouch?1:0) * 50;
         this.camera.set(g);
 
         this.mapModel.render(g, this.camera);
         //this.coordinatesModel.render(g);
 
         for (let player of players) {
-            if (playerModel !== player)
-                player.render(g);
+            if (playerModel.id !== player.id) {
+                
+                //TODO: BUG!!!! For some reson cah't surpress own character.
+                
+                /layer.render(g);
+                //console.log(`${playerModel.id} != ${player.id}`);
+            } else {
+                //console.log("not drawing match");
+            }
         }
 
         for (let bullet of bullets) {
@@ -102,7 +112,7 @@ class MainView {
 
 
         g.push();
-        if (0) {
+        if (1) {
             g.translate(playerModel.x, 0, playerModel.y);
             g.fill(0, 0, 0);
             g.sphere(2200, 2200);
@@ -116,6 +126,9 @@ class MainView {
         }
         g.pop();
 
+
+        //this.camera.z = this.defaultZ - (playerModel.crouch?1:0) * 50;
+        //this.camera.set(g);
 
         g.pop();
         return g;
