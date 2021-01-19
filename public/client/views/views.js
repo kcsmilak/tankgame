@@ -95,7 +95,7 @@ class MainView {
                 
                 //TODO: BUG!!!! For some reson cah't surpress own character.
                 
-                /layer.render(g);
+                player.render(g);
                 //console.log(`${playerModel.id} != ${player.id}`);
             } else {
                 //console.log("not drawing match");

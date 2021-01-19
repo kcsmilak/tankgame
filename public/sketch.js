@@ -77,7 +77,7 @@ class ServerConnection {
         };
         let data = { name: _playerName, color: _playerColor };
         this.gameClient.setPlayerId(_playerName);
-        console.log(`login ${data.name}`);
+        console.log(`SERVER CONNECTION LOGIN login ${data.name}`);
         this.socket.emit('login', data)
     }
 
@@ -146,7 +146,7 @@ function login(playerId) {
     };
     let data = { name: _playerName, color: _playerColor };
     _gameClient.setPlayerId(_playerName);
-    console.log(`login ${data.name}`);
+    console.log(`GLOBAL DOING login ${data.name}`);
     _socket.emit('login', data)
 }
 
@@ -240,8 +240,8 @@ if (0) {
     }
 }
 
-_socket.on("login", playerId => login(playerId));
-_socket.on("heartbeat", data => heartbeat(data));
+//_socket.on("login", playerId => login(playerId));
+//_socket.on("heartbeat", data => heartbeat(data));
 
 
 

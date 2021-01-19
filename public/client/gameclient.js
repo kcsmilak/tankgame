@@ -107,7 +107,7 @@ class GameClient {
                 let playerModel = new PlayerModel(json);
                 this.players.push(playerModel);
 
-                if (null == this.playerModel) {
+                if (null == this.playerModel && this.playerId == playerModel.id) {
                     this.playerModel = new PlayerModel(json);
                 }
 
@@ -191,7 +191,7 @@ class GameClient {
 
         if (null != playerModel) {
 
-            debugString += `\nid:  ${playerModel.id}`;
+            debugString += `\npid: ${playerModel.id}`;
             debugString += `\nx:   ${playerModel.x}`;
             debugString += `\ny:   ${playerModel.y}`;
             debugString += `\nt:   ${playerModel.theta}`;
